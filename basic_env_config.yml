@@ -1,0 +1,74 @@
+---
+- name: Basic Environment Config
+  hosts: all
+  remote_user: root
+  
+  tasks:
+
+    - name: disable NetworkManager
+      service: enabled=no name=NetworkManager state=stopped
+      when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
+
+    - name: enable network
+      service: enabled=yes name=network state=started
+
+    - name: disable firewalld
+      service: enabled=no name=firewalld state=stopped
+      when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
+
+    - name: enable iptables
+      service: enabled=yes name=iptables state=started
+
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: groups['all'] 
+
+    - name: install ntp      
+      yum: name=ntp state=present
+
+    - name: enable ntp
+      service: enabled=yes name=ntpd state=started
+
+    - name: install database on controller
+      yum: pkg={{item}} state=installed
+      with_items:
+       - mysql
+       - mysql-server
+       - MySQL-python
+      when: ansible_hostname == "controller"
+
+    - name: install database helper libraries on nodes
+      yum: pkg=MySQL-python state=present
+      when: ansible_hostname == "compute*"
+
+    - name: enable database
+      service: enabled=yes name=mysqld state=started
+      when: ansible_hostname == "controller"
+
+    - name: install OpenStack packages
+      yum: pkg={{item}} state=installed
+      with_items:
+       - yum-plugin-priorities
+       - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-3.noarch.rpm
+       - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+       - openstack-utils
+       - openstack-selinux
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+
+    - name: install message queue
+      yum: name=qpid-cpp-server state=present
+      when: ansible_hostname == "compute*"
+
+    - name: config qpid
+      command: sed -i 's/auth=yes/auth=no/g' /etc/qpidd.conf
+      when: ansible_hostname == "compute*"
+
+    - name: enable qpid
+      service: enabled=yes name=qpidd state=started
+      when: ansible_hostname == "compute*"
+
+    - name: reboot
+      command: reboot
