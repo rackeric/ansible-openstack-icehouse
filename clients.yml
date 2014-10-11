@@ -1,0 +1,17 @@
+---
+- name: Install OpenStack clients
+  hosts: all
+  remote_user: root
+
+  tasks:
+
+    - name: Install python pip
+      yum: name=python-pip state=present
+
+    - name: Install OpenStack clients
+      yum: pkg={{item}} state=installed
+      with_items:
+       - python-novaclient
+       - python-neutronclient
+       - python-cinderclient
+       - python-keystoneclient
