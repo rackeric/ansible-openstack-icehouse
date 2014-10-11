@@ -70,5 +70,8 @@
       service: enabled=yes name=qpidd state=started
       when: ansible_hostname == "compute*"
 
+    - name: install packages for namespaces support
+      yum: name=iproute*netns* state=present
+
     - name: reboot
       command: reboot
