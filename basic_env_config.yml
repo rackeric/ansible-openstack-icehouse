@@ -60,15 +60,15 @@
 
     - name: install message queue
       yum: name=qpid-cpp-server state=present
-      when: ansible_hostname == "compute*"
+      when: ansible_hostname == "controller"
 
     - name: config qpid
       command: sed -i 's/auth=yes/auth=no/g' /etc/qpidd.conf
-      when: ansible_hostname == "compute*"
+      when: ansible_hostname == "controller"
 
     - name: enable qpid
       service: enabled=yes name=qpidd state=started
-      when: ansible_hostname == "compute*"
+      when: ansible_hostname == "controller"
 
     - name: install packages for namespaces support
       yum: name=iproute*netns* state=present
