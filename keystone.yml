@@ -49,5 +49,8 @@
     - name: enable Keystone service
       service: enabled=yes name=openstack-keystone state=started
 
-    - name: Step 8
-      command: (crontab -l -u keystone 2>&1 | grep -q token_flush) || echo '@hourly /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1' >> /var/spool/cron/keystone
+    - name: touch files
+      command: touch /var/spool/cron/keystone && touch /var/log/keystone/keystone-tokenflush.log
+
+#    - name: Step 8
+#      command: (crontab -l -u keystone 2>&1 | grep -q token_flush) || echo '@hourly /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1' >> /var/spool/cron/keystone
