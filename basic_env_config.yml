@@ -49,6 +49,9 @@
     - name: mysql db install
       command: mysql_install_db
 
+#    - name: mysql secure installation
+#      command: mysql_secure_installation
+
     - name: database stuffs
       command: /usr/bin/mysqladmin -u root password '{{ MYSQL_ADMIN_PASS }}'
 
