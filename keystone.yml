@@ -1,6 +1,6 @@
 ---
 - name: Install and configure identity service Keystone
-  hosts: all
+  hosts: controller
   remote_user: root
 
   vars:
