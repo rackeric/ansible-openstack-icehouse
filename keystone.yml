@@ -6,6 +6,7 @@
   vars:
 
     KEYSTONE_DBPASS: keystone
+    ADMIN_TOKEN: a1s2d3f4g5h6j7k8
 
   tasks:
 
@@ -35,7 +36,7 @@
       command: su -s /bin/sh -c "keystone-manage db_sync" keystone
 
     - name: Define auth token
-      command: openstack-config --set /etc/keystone/keystone.conf DEFAULT admin_token $(openssl rand -hex 10)
+      command: openstack-config --set /etc/keystone/keystone.conf DEFAULT admin_token {{ ADMIN_TOKEN }}
 
     - name: Step 6a
       command: keystone-manage pki_setup --keystone-user keystone --keystone-group keystone
