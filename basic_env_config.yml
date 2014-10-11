@@ -2,6 +2,10 @@
 - name: Basic Environment Config
   hosts: all
   remote_user: root
+
+  vars:
+
+    MYSQL_ADMIN_PASS: 
   
   tasks:
 
@@ -38,6 +42,15 @@
        - MySQL-python
       when: ansible_hostname == "controller"
 
+    - name: mysql db install
+      command: mysql_install_db
+
+    - name: database stuffs
+      command: /usr/bin/mysqladmin -u root password '{{ MYSQL_ADMIN_PASS }}'
+
+    - name: database root user password set
+      command: /usr/bin/mysqladmin -u root -h controller password '{{ MYSQL_ADMIN_PASS }}'
+
     - name: install database helper libraries on nodes
       yum: pkg=MySQL-python state=present
       when: ansible_hostname == "compute*"
@@ -50,7 +63,7 @@
       yum: pkg={{item}} state=installed
       with_items:
        - yum-plugin-priorities
-       - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-3.noarch.rpm
+       - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
        - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
        - openstack-utils
        - openstack-selinux

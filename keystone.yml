@@ -32,7 +32,7 @@
       command: mysql -e "FLUSH PRIVILEGES"
 
     - name: Keystone db sync
-      command: "su -s /bin/sh -c 'keystone-manage db_sync' keystone"
+      command: /usr/bin/keystone-manage db_sync
 
     - name: Define auth token
       command: openstack-config --set /etc/keystone/keystone.conf DEFAULT admin_token $(openssl rand -hex 10)
