@@ -42,6 +42,10 @@
        - MySQL-python
       when: ansible_hostname == "controller"
 
+    - name: enable database
+      service: enabled=yes name=mysqld state=started
+      when: ansible_hostname == "controller"
+
     - name: mysql db install
       command: mysql_install_db
 
@@ -54,10 +58,6 @@
     - name: install database helper libraries on nodes
       yum: pkg=MySQL-python state=present
       when: ansible_hostname == "compute*"
-
-    - name: enable database
-      service: enabled=yes name=mysqld state=started
-      when: ansible_hostname == "controller"
 
     - name: install OpenStack packages
       yum: pkg={{item}} state=installed
