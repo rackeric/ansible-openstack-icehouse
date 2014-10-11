@@ -1,0 +1,4 @@
+---
+  - include: basic_env_config.yml
+  - include: keystone.yml
+  - include: clients.yml
