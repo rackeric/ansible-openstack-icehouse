@@ -9,7 +9,7 @@ GLANCE_PASS="glance"
 # Fix for glance db sync fail for gmp
 
 yum -y groupinstall "Development tools";
-yum -y install gcc libgcc glibc libffi-devel libxml2-devel libxslt-devel zlib-devel bzip2-devel ncurses-devel; # openssl-devel was not working
+yum -y install gcc libgcc glibc libffi-devel libxml2-devel libxslt-devel zlib-devel bzip2-devel ncurses-devel python-devel; # openssl-devel was not working
 
 wget https://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.bz2
 tar -xvjpf gmp*

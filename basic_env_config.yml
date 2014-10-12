@@ -42,6 +42,9 @@
        - MySQL-python
       when: ansible_hostname == "controller"
 
+    - name: push my.cnf file
+      copy: src=files/my.cnf dest=/etc/my.cnf owner=root group=root mode="u=rw,g=r,o=r"
+
     - name: enable database
       service: enabled=yes name=mysqld state=started
       when: ansible_hostname == "controller"
