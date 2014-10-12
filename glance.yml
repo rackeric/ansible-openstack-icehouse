@@ -41,3 +41,6 @@
 
     - name: glance config and service set up
       script: scripts/glance.sh
+
+    - name: glance image tests
+      script: scripts/glance_tests.sh
