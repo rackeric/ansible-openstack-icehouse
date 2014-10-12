@@ -18,7 +18,11 @@ cd gmp*
 make
 make check
 make install
-pip install --ignore-installed PyCrypto
+#pip install --ignore-installed PyCrypto #shit doesn't work anymore
+
+mkdir ~/back
+mv /usr/lib64/libgmp* ~/back/
+cp /usr/local/lib/libgmp* /usr/lib64/
 
 su -s /bin/sh -c "glance-manage db_sync" glance
 
