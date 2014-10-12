@@ -37,4 +37,7 @@
 #      command: su -s /bin/sh -c "glance-manage db_sync" glance
 
     - name: work around for broken glance db sync
+      script: scripts/glance_db_workaround.sh
+
+    - name: glance config and service set up
       script: scripts/glance.sh
