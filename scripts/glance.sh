@@ -4,10 +4,12 @@
 # http://docs.openstack.org/icehouse/install-guide/install/yum/content/glance-install.html
 #
 
+GLANCE_PASS="glance"
+
 # Fix for glance db sync fail for gmp
 
 yum -y groupinstall "Development tools";
-yum -y install gcc libgcc glibc libffi-devel libxml2-devel libxslt-devel zlib-devel bzip2-devel ncurses-devel; # openssl-devel
+yum -y install gcc libgcc glibc libffi-devel libxml2-devel libxslt-devel zlib-devel bzip2-devel ncurses-devel openssl-devel; # openssl-devel was not working
 
 wget https://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.bz2
 tar -xvjpf gmp*
@@ -23,7 +25,7 @@ su -s /bin/sh -c "glance-manage db_sync" glance
 
 # Step 5
 
-keystone user-create --name=glance --pass=glance --email=eric@empulsegroup.com;
+keystone user-create --name=glance --pass=$GLANCE_PASS --email=eric@empulsegroup.com;
 keystone user-role-add --user=glance --tenant=service --role=admin;
 
 # Step 6
@@ -33,7 +35,7 @@ openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_port 
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_protocol http;
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_tenant_name service;
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_user glance;
-openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_password glance;
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_password $GLANCE_PASS;
 openstack-config --set /etc/glance/glance-api.conf paste_deploy flavor keystone;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://controller:5000;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_host controller;
@@ -41,7 +43,7 @@ openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_protocol http;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_tenant_name service;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_user glance;
-openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_password glance;
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_password $GLANCE_PASS;
 openstack-config --set /etc/glance/glance-registry.conf paste_deploy flavor keystone;
 
 # Step 7
