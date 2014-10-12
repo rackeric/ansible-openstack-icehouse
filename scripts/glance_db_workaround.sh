@@ -25,5 +25,5 @@ mkdir ~/back
 mv /usr/lib64/libgmp* ~/back/
 cp /usr/local/lib/libgmp* /usr/lib64/
 
-su -s /bin/sh -c "glance-manage db_sync" glance
+#su -s /bin/sh -c "glance-manage db_sync" glance
 

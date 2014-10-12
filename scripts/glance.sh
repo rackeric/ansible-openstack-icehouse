@@ -6,6 +6,9 @@
 
 GLANCE_PASS="glance"
 
+# glance db sync
+su -s /bin/sh -c "glance-manage db_sync" glance
+
 # Step 5
 
 keystone user-create --name=glance --pass=$GLANCE_PASS --email=eric@empulsegroup.com;
