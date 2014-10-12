@@ -5,8 +5,7 @@
 
   vars:
 
-    KEYSTONE_DBPASS: keystone
-    ADMIN_TOKEN: a1s2d3f4g5h6j7k8
+    GLANCE_DBPASS: glance
 
   tasks:
 
@@ -14,19 +13,19 @@
       command: yum install -y openstack-glance python-glanceclient
 
     - name: set config options in glance-api.conf
-      command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:glance@controller/glance
+      command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@controller/glance
 
     - name: set config options in glance-registry.conf
-      command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:glance@controller/glance
+      command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@controller/glance
 
     - name: create database
       command: mysql -e "CREATE DATABASE glance"
 
     - name: grant 1
-      command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY 'glance'"
+      command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '{{ GLANCE_DBPASS }}'"
 
     - name: grant 2
-      command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY 'glance’"
+      command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '{{ GLANCE_DBPASS }}’"
 
     - name: flugh privs
       command: mysql -e "FLUSH PRIVILEGES"
