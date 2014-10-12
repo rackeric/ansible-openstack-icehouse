@@ -1,0 +1,17 @@
+---
+- name: Install and configure compute node
+  hosts: compute
+  remote_user: root
+
+  vars:
+
+    NOVA_DBPASS: nova
+    MY_IP: 162.242.253.205
+
+  tasks:
+
+    - name: Install nova packages
+      command: yum install -y openstack-nova-compute
+
+    - name: compute node config
+      script: scripts/compute-node.sh
