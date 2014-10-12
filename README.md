@@ -20,3 +20,6 @@ $ ansible-playbook glance.yml
 $ ansible-playbook nova.yml
 
 $ ansible-playbook compute-node.yml
+
+
+$ ansible-playbook horizon.yml
