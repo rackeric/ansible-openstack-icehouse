@@ -1,0 +1,50 @@
+---
+- name: Install and configure image service Glance
+  hosts: controller
+  remote_user: root
+
+  vars:
+
+    NOVA_DBPASS: nova
+    MY_IP: 1.2.3.4
+
+  tasks:
+
+    - name: Install nova packages
+      command: yum install -y openstack-nova-api openstack-nova-cert openstack-nova-conductor openstack-nova-console openstack-nova-novncproxy openstack-nova-scheduler python-novaclient
+
+    - name: set config options in nova.conf
+      command: openstack-config --set /etc/nova/nova.conf database connection mysql://nova:{{ NOVA_DBPASS }}@controller/nova
+
+    - name: qpid config 1
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
+
+    - name: qpid config 2
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname controller
+
+    - name: vnc config 1
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT my_ip {{ MY_IP }}
+
+    - name: vnc config 2
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen {{ MY_IP }}
+
+    - name: vnc config 3
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address {{ MY_IP }}
+
+    - name: create database
+      command: mysql -e "CREATE DATABASE nova"
+
+    - name: grant 1
+      command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
+
+    - name: grant 2
+      command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
+
+    - name: flugh privs
+      command: mysql -e "FLUSH PRIVILEGES"
+
+    - name: nova db sync
+      command: su -s /bin/sh -c "nova-manage db sync" nova
+
+    - name: nova config and service set up
+      script: scripts/nova.sh
