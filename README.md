@@ -12,3 +12,5 @@ mysql_secure_installation # on controller
 ansible-playbook keystone.yml
 
 ansible-playbook clients.yml
+
+ansible-playbook glance.yml
