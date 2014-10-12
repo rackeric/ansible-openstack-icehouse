@@ -1,0 +1,23 @@
+---
+- name: Install the dashboard Horizon
+  hosts: controller
+  remote_user: root
+
+  tasks:
+
+    - name: Install packages via yum
+      yum: pkg={{item}} state=installed
+      with_items:
+       - memcached
+       - python-memcached
+       - mod_wsgi
+       - openstack-dashboard
+
+    - name: SELINUX stuffs
+      command: setsebool -P httpd_can_network_connect on
+
+    - name: enable Apache
+      service: enabled=yes name=httpd state=started
+
+    - name: enable memcached
+      service: enabled=yes name=memcached state=started
