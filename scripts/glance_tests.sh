@@ -22,6 +22,6 @@ glance image-list
 rm -r /tmp/images
 
 ## CIRROS VHD ##
-curl -O https://github.com/downloads/citrix-openstack/warehouse/cirros-0.3.0-x86_64-disk.vhd.tgz;
-glance image-create --name cirros-vhd --container-format=ovf --disk-format=vhd < cirros-0.3.0-x86_64-disk.vhd.tgz;
-rm cirros*.tgz;
+#curl -O https://github.com/downloads/citrix-openstack/warehouse/cirros-0.3.0-x86_64-disk.vhd.tgz;
+#glance image-create --name cirros-vhd --container-format=ovf --disk-format=vhd < cirros-0.3.0-x86_64-disk.vhd.tgz;
+#rm cirros*.tgz;
