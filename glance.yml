@@ -18,8 +18,8 @@
     - name: set config options in glance-registry.conf
       command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@controller/glance
 
-    - name: drop database
-      command: mysql -e "DROP DATABASE glance"
+#    - name: drop database
+#      command: mysql -e "DROP DATABASE glance"
 
     - name: create database
       command: mysql -e "CREATE DATABASE glance"
