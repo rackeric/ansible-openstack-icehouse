@@ -16,3 +16,5 @@ $ ansible-playbook keystone.yml
 $ ansible-playbook clients.yml
 
 $ ansible-playbook glance.yml
+
+$ ansible-playbook nova.yml
