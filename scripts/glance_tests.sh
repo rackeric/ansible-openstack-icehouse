@@ -2,8 +2,10 @@
 
 ## VERIFY GLANCE ##
 
-export OS_SERVICE_TOKEN=a1s2d3f4g5h6j7k8
-export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
+export OS_USERNAME=admin
+export OS_PASSWORD=admin
+export OS_TENANT_NAME=admin
+export OS_AUTH_URL=http://controller:35357/v2.0
 
 # Step 1
 mkdir /tmp/images;
