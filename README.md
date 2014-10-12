@@ -18,3 +18,5 @@ $ ansible-playbook clients.yml
 $ ansible-playbook glance.yml
 
 $ ansible-playbook nova.yml
+
+$ ansible-playbook compute-node.yml
