@@ -12,7 +12,6 @@
 
     - name: install database helper libraries on nodes
       yum: pkg=MySQL-python state=present
-      when: ansible_hostname == "compute*"
 
     - name: install OpenStack packages
       yum: pkg={{item}} state=installed
