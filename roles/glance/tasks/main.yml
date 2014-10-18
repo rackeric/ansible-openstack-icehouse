@@ -5,10 +5,10 @@
       command: yum install -y openstack-glance python-glanceclient
 
     - name: set config options in glance-api.conf
-      command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@controller/glance
+      command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@localhost/glance
 
     - name: set config options in glance-registry.conf
-      command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@controller/glance
+      command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@localhost/glance
 
     - name: create database
       command: mysql -e "CREATE DATABASE glance"
