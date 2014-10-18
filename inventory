@@ -1,6 +1,6 @@
-[controller]
+[controllers]
 controller.domain.com	ansible_ssh_user=root ansible_ssh_host=1.2.3.4
 
-[compute]
+[compute-nodes]
 compute1.domain.com	ansible_ssh_user=root
 compute2.domain.com	ansible_ssh_user=root

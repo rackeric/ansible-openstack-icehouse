@@ -1,6 +1,6 @@
 ---
 # file: compute-node.yml
-- hosts: compute
+- hosts: compute-nodes
   roles:
     - common
     - compute-node
