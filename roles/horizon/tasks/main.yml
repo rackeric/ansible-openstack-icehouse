@@ -14,7 +14,7 @@
        - openstack-dashboard
 
     - name: push local_settings file
-      copy: src=files/local_settings dest=/etc/openstack-dashboard/local_settings
+      copy: src=roles/horizon/files/local_settings dest=/etc/openstack-dashboard/local_settings
 
 #    - name: SELINUX stuffs
 #      command: setsebool -P httpd_can_network_connect on
