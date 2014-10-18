@@ -23,11 +23,12 @@
     - name: flugh privs
       command: mysql -e "FLUSH PRIVILEGES"
 
-#    - name: glance db sync
-#      command: su -s /bin/sh -c "glance-manage db_sync" glance
-
     - name: work around for broken glance db sync
       script: roles/glance/files/glance_db_workaround.sh
+      run_once: true
+
+    - name: glance db sync
+      command: su -s /bin/sh -c "glance-manage db_sync" glance
 
     - name: glance config and service set up
       script: roles/glance/files/glance.sh

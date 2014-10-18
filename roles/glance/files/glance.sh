@@ -10,7 +10,8 @@ export OS_SERVICE_TOKEN=a1s2d3f4g5h6j7k8
 export OS_SERVICE_ENDPOINT=http://controller:35357/v2.0
 
 # glance db sync
-su -s /bin/sh -c "glance-manage db_sync" glance
+# moving to playbook task
+#su -s /bin/sh -c "glance-manage db_sync" glance
 
 # Step 5
 
