@@ -1,2 +1,4 @@
 ---
 # vars file for compute-node
+NOVA_DBPASS: nova
+MY_IP: 1.2.3.4

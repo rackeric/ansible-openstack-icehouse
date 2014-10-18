@@ -1,9 +1,5 @@
 ---
-- name: Install the dashboard Horizon
-  hosts: controller
-  remote_user: root
-
-  tasks:
+# file: roles/horizon/tasks/main.yml
 
     - name: Install packages via yum
       yum: pkg={{item}} state=installed

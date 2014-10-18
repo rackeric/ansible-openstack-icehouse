@@ -1,14 +1,5 @@
 ---
-- name: Install and configure image service Glance
-  hosts: controller
-  remote_user: root
-
-  vars:
-
-    NOVA_DBPASS: nova
-    MY_IP: 1.2.3.4
-
-  tasks:
+# file: roles/nova/tasks/main.yml
 
     - name: Install nova packages
       command: yum install -y openstack-nova-api openstack-nova-cert openstack-nova-conductor openstack-nova-console openstack-nova-novncproxy openstack-nova-scheduler python-novaclient

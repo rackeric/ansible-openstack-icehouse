@@ -1,2 +1,4 @@
 ---
 # vars file for keystone
+KEYSTONE_DBPASS: keystone
+ADMIN_TOKEN: a1s2d3f4g5h6j7k8

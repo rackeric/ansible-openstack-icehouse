@@ -1,2 +1,4 @@
 ---
 # vars file for nova
+NOVA_DBPASS: nova
+MY_IP: 1.2.3.4

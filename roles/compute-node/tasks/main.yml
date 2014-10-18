@@ -1,14 +1,5 @@
 ---
-- name: Install and configure compute node
-  hosts: compute
-  remote_user: root
-
-  vars:
-
-    NOVA_DBPASS: nova
-    MY_IP: 162.242.253.205
-
-  tasks:
+# file: roles/compute-node/tasks/main.yml
 
     - name: install database helper libraries on nodes
       yum: pkg=MySQL-python state=present

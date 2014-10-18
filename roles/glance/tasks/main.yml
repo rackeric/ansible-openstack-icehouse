@@ -1,13 +1,5 @@
 ---
-- name: Install and configure image service Glance
-  hosts: controller
-  remote_user: root
-
-  vars:
-
-    GLANCE_DBPASS: glance
-
-  tasks:
+# file: roles/glance/tasks/main.yml
 
     - name: Install glance packages
       command: yum install -y openstack-glance python-glanceclient

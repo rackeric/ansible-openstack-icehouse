@@ -1,14 +1,5 @@
 ---
-- name: Install and configure identity service Keystone
-  hosts: controller
-  remote_user: root
-
-  vars:
-
-    KEYSTONE_DBPASS: keystone
-    ADMIN_TOKEN: a1s2d3f4g5h6j7k8
-
-  tasks:
+# file: roles/keystone/tasks/main.yml
 
     - name: install Keystone
       yum: pkg={{item}} state=installed

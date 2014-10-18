@@ -1,13 +1,5 @@
 ---
-- name: Basic Environment Config
-  hosts: all
-  remote_user: root
-
-  vars:
-
-    MYSQL_ADMIN_PASS: 
-  
-  tasks:
+# file: roles/common/tasks/main.yml
 
     - name: disable NetworkManager
       service: enabled=no name=NetworkManager state=stopped
