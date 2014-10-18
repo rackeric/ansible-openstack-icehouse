@@ -7,19 +7,10 @@ http://docs.openstack.org/icehouse/install-guide/install/yum/content/index.html
 
 Steps to deploy
 ---------------
-$ ansible-playbook basic_env_config.yml # wait for reboot
+1. Set up your inventory file with a controller and compute node
 
-$ mysql_secure_installation # on controller
+2. Run site.yml
 
-$ ansible-playbook keystone.yml
-
-$ ansible-playbook clients.yml
-
-$ ansible-playbook glance.yml
-
-$ ansible-playbook nova.yml
-
-$ ansible-playbook compute-node.yml
+$ time ansible-playbook site.yml
 
 
-$ ansible-playbook horizon.yml
