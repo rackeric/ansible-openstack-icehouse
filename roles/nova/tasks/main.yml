@@ -38,5 +38,24 @@
     - name: nova db sync
       command: su -s /bin/sh -c "nova-manage db sync" nova
 
-    - name: nova config and service set up
+    - name: nova config, service and endpoint set up
       script: roles/nova/files/nova.sh
+
+    - name: enable openstack-nova-api service
+      service: enabled=yes name=openstack-nova-api state=started
+
+    - name: enable openstack-nova-cert service
+      service: enabled=yes name=openstack-nova-cert state=started
+
+    - name: enable openstack-nova-consoleauth service
+      service: enabled=yes name=openstack-nova-consoleauth state=started
+
+    - name: enable openstack-nova-scheduler service
+      service: enabled=yes name=openstack-nova-scheduler state=started
+
+    - name: enable openstack-nova-conductor service
+      service: enabled=yes name=openstack-nova-conductor state=started
+
+    - name: enable openstack-nova-novncproxy service
+      service: enabled=yes name=openstack-nova-novncproxy state=started
+

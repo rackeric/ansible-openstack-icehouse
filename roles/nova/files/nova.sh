@@ -23,20 +23,3 @@ openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_password $NO
 # Step 9
 keystone service-create --name=nova --type=compute --description="OpenStack Compute";
 keystone endpoint-create --service-id=$(keystone service-list | awk '/ compute / {print $2}') --publicurl=http://controller:8774/v2/%\(tenant_id\)s --internalurl=http://controller:8774/v2/%\(tenant_id\)s --adminurl=http://controller:8774/v2/%\(tenant_id\)s;
-
-# Step 10
-service openstack-nova-api start;
-service openstack-nova-cert start;
-service openstack-nova-consoleauth start;
-service openstack-nova-scheduler start;
-service openstack-nova-conductor start;
-service openstack-nova-novncproxy start;
-chkconfig openstack-nova-api on;
-chkconfig openstack-nova-cert on;
-chkconfig openstack-nova-consoleauth on;
-chkconfig openstack-nova-scheduler on;
-chkconfig openstack-nova-conductor on;
-chkconfig openstack-nova-novncproxy on;
-
-# Step 11
-nova image-list
