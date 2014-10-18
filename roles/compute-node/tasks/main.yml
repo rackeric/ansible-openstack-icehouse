@@ -29,4 +29,4 @@
       command: yum install -y openstack-nova-compute
 
     - name: compute node config
-      script: scripts/compute-node.sh
+      script: roles/compute-node/files/compute-node.sh
