@@ -103,3 +103,6 @@
     - name: wait for the server to come up
       sudo: false
       local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 delay=30
+
+    - name: pause 1 minute to allow boot to complete
+      pause: seconds=60
