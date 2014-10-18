@@ -43,15 +43,19 @@
 
     - name: mysql db install
       command: mysql_install_db
+      when: ansible_hostname == "controller"
+
 
 #    - name: mysql secure installation
 #      command: mysql_secure_installation
 
     - name: database stuffs
       command: /usr/bin/mysqladmin -u root password '{{ MYSQL_ADMIN_PASS }}'
+      when: ansible_hostname == "controller"
 
     - name: database root user password set
       command: /usr/bin/mysqladmin -u root -h controller password '{{ MYSQL_ADMIN_PASS }}'
+      when: ansible_hostname == "controller"
 
     - name: install database helper libraries on nodes
       yum: pkg=MySQL-python state=present
