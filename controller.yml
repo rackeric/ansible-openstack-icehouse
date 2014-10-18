@@ -3,7 +3,7 @@
 - hosts: controllers
   roles:
     - common
-    - identity
+    - keystone
     - glance
     - nova
     - horizon
