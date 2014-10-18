@@ -1,0 +1,9 @@
+---
+# file: controller.yml
+- hosts: controllers
+  roles:
+    - common
+    - identity
+    - glance
+    - nova
+    - horizon
