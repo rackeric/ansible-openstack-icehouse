@@ -9,7 +9,7 @@
       when: ansible_hostname == "controller"
 
     - name: Config database
-      command: openstack-config --set /etc/keystone/keystone.conf database connection mysql://keystone:{{ KEYSTONE_DBPASS }}@controller/keystone
+      command: openstack-config --set /etc/keystone/keystone.conf database connection mysql://keystone:{{ KEYSTONE_DBPASS }}@localhost/keystone
 
     - name: Create MySQL database
       command: mysql -e "CREATE DATABASE keystone"
