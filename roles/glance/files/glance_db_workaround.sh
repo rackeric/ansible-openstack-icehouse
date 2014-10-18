@@ -1,11 +1,4 @@
 #!/bin/sh
-#
-# Install OpenStack Glance services
-# http://docs.openstack.org/icehouse/install-guide/install/yum/content/glance-install.html
-#
-
-GLANCE_PASS="glance"
-
 # Fix for glance db sync fail for gmp
 
 yum -y groupinstall "Development tools";
@@ -24,6 +17,5 @@ make install
 mkdir ~/back
 mv /usr/lib64/libgmp* ~/back/
 cp /usr/local/lib/libgmp* /usr/lib64/
-
-#su -s /bin/sh -c "glance-manage db_sync" glance
-
+cd ~
+rm -Rf ~/gmp*
