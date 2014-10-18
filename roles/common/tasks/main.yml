@@ -92,5 +92,14 @@
     - name: install packages for namespaces support
       yum: name=iproute*netns* state=present
 
+    - name: install the openstack clients and python-pip
+      yum: pkg={{ item }} state=installed
+      with_items:
+       - python-pip
+       - python-novaclient
+       - python-neutronclient
+       - python-cinderclient
+       - python-keystoneclient
+
     - name: reboot
       command: reboot
