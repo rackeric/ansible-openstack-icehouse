@@ -11,7 +11,7 @@
       command: openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
 
     - name: qpid config 2
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname controller
+      command: openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname {{ CONTROLLER }}
 
     - name: vnc config 1
       command: openstack-config --set /etc/nova/nova.conf DEFAULT my_ip {{ MY_IP }}

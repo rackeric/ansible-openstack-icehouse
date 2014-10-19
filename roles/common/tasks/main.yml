@@ -54,7 +54,7 @@
       when: ansible_hostname == "controller"
 
     - name: database root user password set
-      command: /usr/bin/mysqladmin -u root -h controller password '{{ MYSQL_ADMIN_PASS }}'
+      command: /usr/bin/mysqladmin -u root -h {{ CONTROLLER }} password '{{ MYSQL_ADMIN_PASS }}'
       when: ansible_hostname == "controller"
 
     - name: install database helper libraries on nodes

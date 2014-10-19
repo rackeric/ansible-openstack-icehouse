@@ -73,12 +73,12 @@
   command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
-   - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_url http://controller:9696
+   - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_url http://{{ CONTROLLER }}:9696
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_auth_strategy keystone
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_tenant_name service
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_username neutron
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_password neutron
-   - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_auth_url http://controller:35357/v2.0
+   - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_auth_url http://{{ CONTROLLER }}:35357/v2.0
    - openstack-config --set /etc/nova/nova.conf DEFAULT linuxnet_interface_driver nova.network.linux_net.LinuxOVSInterfaceDriver
    - openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
    - openstack-config --set /etc/nova/nova.conf DEFAULT security_group_api neutron

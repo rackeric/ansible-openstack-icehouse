@@ -6,7 +6,7 @@ ADMIN_PASS="nova"
 CONTROLLER="controller"
 
 # Step 2
-openstack-config --set /etc/nova/nova.conf database connection mysql://nova:nova@controller/nova;
+openstack-config --set /etc/nova/nova.conf database connection mysql://$ADMIN_USER:$ADMIN_PASS@$CONTROLLER/nova;
 openstack-config --set /etc/nova/nova.conf DEFAULT auth_strategy keystone;
 openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_uri http://$CONTROLLER:5000;
 openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_host $CONTROLLER;
