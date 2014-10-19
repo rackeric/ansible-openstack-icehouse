@@ -16,6 +16,9 @@
 - name: Flush Privileges
   command: mysql -e "FLUSH PRIVILEGES"
 
+- name: Add Keystone service and endpoint
+  script: roles/neutron/files/neutron.sh
+
 #- name: Add Keystone service and endpoint
 #  command: "{{ item }}"
 #  with_items:

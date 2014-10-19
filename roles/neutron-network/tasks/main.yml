@@ -90,9 +90,9 @@
    - neutron-dhcp-agent
    - neutron-metadata-agent
 
-- name: Configure OVS
-  command: "{{ item }}"
-  with_items:
-   - ovs-vsctl add-br br-int
-   - ovs-vsctl add-br br-ex
+#- name: Configure OVS
+#  command: "{{ item }}"
+#  with_items:
+#   - ovs-vsctl add-br br-int
+#   - ovs-vsctl add-br br-ex
 #   - ovs-vsctl add-port br-ex eth0  # breaks networking
