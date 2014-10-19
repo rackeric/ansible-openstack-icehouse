@@ -41,7 +41,7 @@
 - name: Configure Metadata Agent
   command: "{{ item }}"
   with_items:
-   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_url http://{{ CONTROLLER }:5000/v2.0
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_url http://{{ CONTROLLER }}:5000/v2.0
    - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_region regionOne
    - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_tenant_name service
    - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_user neutron
