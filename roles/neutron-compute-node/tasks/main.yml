@@ -63,10 +63,12 @@
    - openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
    - openstack-config --set /etc/nova/nova.conf DEFAULT security_group_api neutron
 
+- name: Create symlink for ML2 plugin
+  file: src=/etc/neutron/plugins/ml2/ml2_conf.ini dest=/etc/neutron/plugin.ini owner=root group=root state=link
+
 - name: Finalize install
   command: "{{ item }}"
   with_items:
-   - ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
    - cp /etc/init.d/neutron-openvswitch-agent /etc/init.d/neutron-openvswitch-agent.orig
    - sed -i 's,plugins/openvswitch/ovs_neutron_plugin.ini,plugin.ini,g' /etc/init.d/neutron-openvswitch-agent
 
