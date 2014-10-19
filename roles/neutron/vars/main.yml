@@ -9,4 +9,4 @@ ENVIRONMENT:
   OS_USERNAME: admin
   OS_PASSWORD: admin
   OS_TENANT_NAME: admin
-  OS_AUTH_URL: http://controller:35357/v2.0
+  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0
