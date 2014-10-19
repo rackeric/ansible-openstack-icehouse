@@ -6,4 +6,6 @@
     - keystone
     - glance
     - nova
+    - neutron
+    - neutron-network
     - horizon
