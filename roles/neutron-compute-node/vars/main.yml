@@ -1,0 +1,5 @@
+---
+# vars file for neutron-compute-node
+CONTROLLER: controller
+NEUTRON_ADMIN_PASS: neutron
+LOCAL_IP: "{{ ansible_default_ipv4.address }}"
