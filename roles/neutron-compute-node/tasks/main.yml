@@ -1,7 +1,7 @@
 ---
 # tasks file for neutron-compute-node
 - name: Edit /etc/sysctl.conf vars
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - sed -i 's/net.ipv4.conf.all.rp_filter=1/net.ipv4.conf.all.rp_filter=0/g' /etc/sysctl.conf
    - sed -i 's/net.ipv4.conf.default.rp_filter=1/net.ipv4.conf.default.rp_filter=0/g' /etc/sysctl.conf
@@ -15,7 +15,7 @@
 #   - openstack-nova-network  # not sure if this is needed
 
 - name: Configure network common components
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
    - openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
@@ -31,7 +31,7 @@
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins router
 
 - name: Configure ML2 plugin
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers gre
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types gre
@@ -50,7 +50,7 @@
   command: ovs-vsctl add-br br-int
 
 - name: Configure compute to use networking
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_url http://{{ CONTROLLER }}:9696
@@ -64,7 +64,7 @@
    - openstack-config --set /etc/nova/nova.conf DEFAULT security_group_api neutron
 
 - name: Finalize install
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
    - cp /etc/init.d/neutron-openvswitch-agent /etc/init.d/neutron-openvswitch-agent.orig

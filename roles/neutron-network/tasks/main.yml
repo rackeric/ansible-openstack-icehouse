@@ -8,7 +8,7 @@
    - openstack-neutron-openvswitch
 
 - name: Configure Network Common Components
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
    - openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
@@ -24,13 +24,13 @@
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins router
 
 - name: Configure L3 Agent
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/l3_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.OVSInterfaceDriver
    - openstack-config --set /etc/neutron/l3_agent.ini DEFAULT use_namespaces True
 
 - name: Configure DHCP Agent
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.OVSInterfaceDriver
    - openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
@@ -39,20 +39,18 @@
    - killall dnsmasq
 
 - name: Configure Metadata Agent
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
-   - 
-
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_url http://controller:5000/v2.0
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_region regionOne
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_tenant_name service
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_user neutron
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_password neutron
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_ip controller
-openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret meta
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_url http://controller:5000/v2.0
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT auth_region regionOne
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_tenant_name service
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_user neutron
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT admin_password neutron
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_ip controller
+   - openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret meta
 
 - name: Configure metadata agent on controller
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/nova/nova.conf DEFAULT service_neutron_metadata_proxy true
    - openstack-config --set /etc/nova/nova.conf DEFAULT neutron_metadata_proxy_shared_secret meta
@@ -63,7 +61,7 @@ openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_sh
   when: ansible_hostname == "{{ CONTROLLER }}"
 
 - name: Configure Module Layer 2 (ML2) Plugin
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers gre
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types gre
@@ -79,14 +77,14 @@ openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_sh
   service: name=openvswitch enabled=yes state=started
 
 - name: Configure OVS
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - ovs-vsctl add-br br-int
    - ovs-vsctl add-br br-ex
    - ovs-vsctl add-port br-ex eth0
 
 - name: Finalize the Install
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - cp /etc/init.d/neutron-openvswitch-agent /etc/init.d/neutron-openvswitch-agent.orig
    - sed -i 's,plugins/openvswitch/ovs_neutron_plugin.ini,plugin.ini,g' /etc/init.d/neutron-openvswitch-agent
