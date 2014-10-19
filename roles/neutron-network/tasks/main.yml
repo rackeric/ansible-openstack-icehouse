@@ -67,7 +67,7 @@
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types gre
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers openvswitch
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_gre tunnel_id_ranges 1:1000
-   - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs local_ip 192.168.2.100
+   - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs local_ip {{ LOCAL_IP }}
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs tunnel_type gre
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs enable_tunneling True
    - openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver

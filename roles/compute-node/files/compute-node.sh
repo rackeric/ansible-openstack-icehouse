@@ -32,7 +32,7 @@ openstack-config --set /etc/nova/nova.conf DEFAULT glance_host $CONTROLLER;
 
 # Step 6
 #$ egrep -c '(vmx|svm)' /proc/cpuinfoIf 0 then,
-# openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu
+openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu
 
 # Step 7
 service libvirtd start;

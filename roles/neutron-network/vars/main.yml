@@ -2,3 +2,4 @@
 # vars file for neutron-network
 CONTROLLER: controller
 NEUTRON_ADMIN_PASS: neutron
+LOCAL_IP: "{{ ansible_default_ipv4.address }}"
