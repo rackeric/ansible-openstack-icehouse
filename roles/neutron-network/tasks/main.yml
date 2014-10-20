@@ -90,6 +90,21 @@
    - neutron-dhcp-agent
    - neutron-metadata-agent
 
+- name: Create ifcfg-br-ex file
+  template: src=roles/neutron-network/files/ifcfg-br-ex.j2 dest=/etc/sysconfig/network-scripts/ifcfg-br-ex owner=root group=root mode=0644
+
+- name: Create /etc/sysconfig/network-scripts/ifcfg-eth0
+  template: src=roles/neutron-network/files/ifcfg-eth0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-eth0 owner=root group=root mode=0644
+
+- name: Update /etc/neutron/plugin.ini #1
+  command: cat "network_vlan_ranges = physnet1" >> /etc/neutron/plugin.ini
+
+- name: Update /etc/neutron/plugin.ini #2
+  command: cat "bridge_mappings = physnet1:br-ex" >> /etc/neutron/plugin.ini
+
+- name: restart networking
+  command: service network restart
+
 - name: Configure OVS bridge br-int
   openvswitch_bridge: bridge=br-int state=present
 
