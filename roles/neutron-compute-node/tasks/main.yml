@@ -46,8 +46,8 @@
 - name: Enable OVS service
   service: name=openvswitch enabled=yes state=started
 
-- name: Configure OVS
-  command: ovs-vsctl add-br br-int
+- name: Create a bridge named br-int in OVS
+- openvswitch_bridge: bridge=br-int state=present
 
 - name: Configure compute to use networking
   command: "{{ item }}"

@@ -90,9 +90,11 @@
    - neutron-dhcp-agent
    - neutron-metadata-agent
 
-#- name: Configure OVS
-#  command: "{{ item }}"
-#  with_items:
-#   - ovs-vsctl add-br br-int
-#   - ovs-vsctl add-br br-ex
-#   - ovs-vsctl add-port br-ex eth0  # breaks networking
+- name: Configure OVS bridge br-int
+- openvswitch_bridge: bridge=br-int state=present
+
+- name: Configure OVS bridge br-ex
+- openvswitch_bridge: bridge=br-ex state=present
+
+- name: Creates port eth0 on OVS bridge br-ex
+- openvswitch_port: bridge=br-ex port=eth0 state=present
