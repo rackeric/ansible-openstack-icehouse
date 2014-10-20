@@ -13,4 +13,7 @@ Steps to deploy
 
 $ time ansible-playbook site.yml
 
+When complete you can reach Horizon at http://<ip address>/dashboard using credentials admin/admin (changed in roles vars).
+
+* Add iptables rules for port 80 and from compute to controller
 
