@@ -17,3 +17,11 @@ When complete you can reach Horizon at http://1.2.3.4/dashboard using credential
 
 * Add iptables rules for port 80 and from compute to controller
 
+
+
+##Helpful Information
+===================
+The roles will search for a hidden file to confirm if the setup scripts have been ran and will not run again if found.  These are the tasks which create keystone users, services and endpoints for the other OpenStack components.
+
+~/.keystone_setup
+~/.glance_setup
