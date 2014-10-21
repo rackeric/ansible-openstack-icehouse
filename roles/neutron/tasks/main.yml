@@ -17,8 +17,15 @@
 - name: Flush Privileges
   command: mysql -e "FLUSH PRIVILEGES"
 
+- name: check for has_neutron_setup confirmation file
+  command: cat ~/.has_neutron_setup
+  ignore_errors: yes
+  register: neutron_setup_check
+
 - name: Add Keystone service and endpoint
   script: roles/neutron/files/neutron.sh
+  register: neutron_setup
+  when: neutron_setup_check|failed
 
 #- name: Add Keystone service and endpoint
 #  command: "{{ item }}"
@@ -59,6 +66,7 @@
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_auth_url http://{{ CONTROLLER }}:35357/v2.0
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin ml2
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins router
+  environment: ENVIRONMENT
 
 - name: Configure the Modular Layer 2 (ML2) plug-in
   command: "{{ item }}"
@@ -92,7 +100,10 @@
   with_items:
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.ml2.plugin.Ml2Plugin
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins neutron.services.l3_router.l3_router_plugin.L3RouterPlugin
-   - su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugin.ini upgrade head" neutron
+
+- name: db sync again
+  command: su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugin.ini upgrade head" neutron
+  when: neutron_setup_check|failed
 
 - name: restart nova services
   service: name={{ item }} state=restarted
@@ -103,3 +114,7 @@
 
 - name: enable neutron server
   service: name=neutron-server state=started enabled=yes
+
+- name: set has_neutron_setup confirmation file
+  command: touch ~/.has_neutron_setup
+  when: neutron_setup|success
