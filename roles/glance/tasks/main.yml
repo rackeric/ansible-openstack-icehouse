@@ -5,14 +5,13 @@
   command: yum install -y openstack-glance python-glanceclient
 
 - name: set config options in glance-api.conf
-  command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@localhost/glance
+  command: openstack-config --set /etc/glance/glance-api.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@{{ CONTROLLER }}/glance
 
 - name: set config options in glance-registry.conf
-  command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@localhost/glance
+  command: openstack-config --set /etc/glance/glance-registry.conf database connection mysql://glance:{{ GLANCE_DBPASS }}@{{ CONTROLLER }}/glance
 
 - name: create database
   command: mysql -e "CREATE DATABASE glance"
-  run_once: true
   ignore_errors: yes
 
 - name: grant 1
@@ -21,19 +20,34 @@
 - name: grant 2
   command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '{{ GLANCE_DBPASS }}'"
 
-- name: flugh privs
+- name: grant 3
+  }command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'{{ CONTROLLER }' IDENTIFIED BY '{{ GLANCE_DBPASS }}'"
+
+- name: flush privs
   command: mysql -e "FLUSH PRIVILEGES"
+
+- name: check for glance_setup confirmation file
+  command: cat ~/.glance_setup
+  ignore_errors: yes
+  register: glance_setup_check
 
 - name: work around for broken glance db sync
   script: roles/glance/files/glance_db_workaround.sh
-  run_once: true
-  delegate_to: controller
+  when: glance_setup_check|failed
 
 - name: glance db sync
   command: su -s /bin/sh -c "glance-manage db_sync" glance
+  when: glance_setup_check|failed
 
 - name: glance config and service set up
   script: roles/glance/files/glance.sh
+  when: glance_setup_check|failed
+  register: glance_setup
 
 - name: glance image tests
   script: roles/glance/files/glance_tests.sh
+  when: glance_setup_check|failed
+
+me: set glance_setup confirmation file
+  command: touch ~/.glance_setup
+  when: glance_setup|success

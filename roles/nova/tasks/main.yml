@@ -24,7 +24,6 @@
 
     - name: create database
       command: mysql -e "CREATE DATABASE nova"
-      run_once: true
       ignore_errors: yes
 
     - name: grant 1

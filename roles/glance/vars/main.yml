@@ -1,3 +1,4 @@
 ---
 # vars file for glance
 GLANCE_DBPASS: glance
+CONTROLLER: controller
