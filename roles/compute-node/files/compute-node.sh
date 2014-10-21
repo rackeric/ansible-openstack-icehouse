@@ -31,8 +31,10 @@ openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_base_url http://$C
 openstack-config --set /etc/nova/nova.conf DEFAULT glance_host $CONTROLLER;
 
 # Step 6
-#$ egrep -c '(vmx|svm)' /proc/cpuinfoIf 0 then,
-openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu
+if [ $(egrep -c '(vmx|svm)' /proc/cpuinfo) -eq 0 ]
+  then
+    openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu
+fi
 
 # Step 7
 service libvirtd start;
