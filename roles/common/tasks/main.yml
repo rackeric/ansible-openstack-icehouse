@@ -1,112 +1,109 @@
 ---
 # file: roles/common/tasks/main.yml
 
-    - name: disable NetworkManager
-      service: enabled=no name=NetworkManager state=stopped
-      when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
+- name: disable NetworkManager
+  service: enabled=no name=NetworkManager state=stopped
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
 
-    - name: enable network
-      service: enabled=yes name=network state=started
+- name: enable network
+  service: enabled=yes name=network state=started
 
-    - name: disable firewalld
-      service: enabled=no name=firewalld state=stopped
-      when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
+- name: disable firewalld
+  service: enabled=no name=firewalld state=stopped
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7'
 
-    - name: enable iptables
-      service: enabled=yes name=iptables state=started
+- name: enable iptables
+  service: enabled=yes name=iptables state=started
 
-    - name: "Build hosts file"
-      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
-      when: hostvars[item].ansible_default_ipv4.address is defined
-      with_items: groups['all'] 
+- name: "Build hosts file"
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: groups['all'] 
 
-    - name: install ntp      
-      yum: name=ntp state=present
+- name: install ntp      
+  yum: name=ntp state=present
 
-    - name: enable ntp
-      service: enabled=yes name=ntpd state=started
+- name: enable ntp
+  service: enabled=yes name=ntpd state=started
 
-    - name: install database on controller
-      yum: pkg={{item}} state=installed
-      with_items:
-       - mysql
-       - mysql-server
-       - MySQL-python
-      when: ansible_hostname == "controller"
+- name: install database on controller
+  yum: pkg={{item}} state=installed
+  with_items:
+   - mysql
+   - mysql-server
+   - MySQL-python
+  when: ansible_hostname == "controller"
 
-    - name: push my.cnf file
-      copy: src=roles/common/files/my.cnf dest=/etc/my.cnf owner=root group=root
+- name: push my.cnf file
+  copy: src=roles/common/files/my.cnf dest=/etc/my.cnf owner=root group=root
+  when: ansible_hostname == "controller"
 
-    - name: enable database
-      service: enabled=yes name=mysqld state=started
-      when: ansible_hostname == "controller"
+- name: enable database
+  service: enabled=yes name=mysqld state=started
+  when: ansible_hostname == "controller"
 
-    - name: mysql db install
-      command: mysql_install_db
-      when: ansible_hostname == "controller"
+- name: mysql db install
+  command: mysql_install_db
+  when: ansible_hostname == "controller"
 
+- name: database stuffs
+  command: /usr/bin/mysqladmin -u root password '{{ MYSQL_ADMIN_PASS }}'
+  when: ansible_hostname == "controller"
 
-#    - name: mysql secure installation
-#      command: mysql_secure_installation
+- name: database root user password set
+  command: /usr/bin/mysqladmin -u root -h {{ CONTROLLER }} password '{{ MYSQL_ADMIN_PASS }}'
+  when: ansible_hostname == "controller"
 
-    - name: database stuffs
-      command: /usr/bin/mysqladmin -u root password '{{ MYSQL_ADMIN_PASS }}'
-      when: ansible_hostname == "controller"
+- name: install database helper libraries on nodes
+  yum: pkg=MySQL-python state=present
+  when: ansible_hostname == "compute*"
 
-    - name: database root user password set
-      command: /usr/bin/mysqladmin -u root -h {{ CONTROLLER }} password '{{ MYSQL_ADMIN_PASS }}'
-      when: ansible_hostname == "controller"
+- name: install OpenStack repos and packages
+  yum: pkg={{item}} state=installed
+  with_items:
+   - yum-plugin-priorities
+   - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+   - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+   - openstack-utils
+   - openstack-selinux
 
-    - name: install database helper libraries on nodes
-      yum: pkg=MySQL-python state=present
-      when: ansible_hostname == "compute*"
+- name: upgrade all packages
+  yum: name=* state=latest
 
-    - name: install OpenStack packages
-      yum: pkg={{item}} state=installed
-      with_items:
-       - yum-plugin-priorities
-       - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
-       - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-       - openstack-utils
-       - openstack-selinux
+- name: install message queue
+  yum: name=qpid-cpp-server state=present
+  when: ansible_hostname == "controller"
 
-    - name: upgrade all packages
-      yum: name=* state=latest
+- name: config qpid
+  command: sed -i 's/auth=yes/auth=no/g' /etc/qpidd.conf
+  when: ansible_hostname == "controller"
 
-    - name: install message queue
-      yum: name=qpid-cpp-server state=present
-      when: ansible_hostname == "controller"
+- name: enable qpid
+  service: enabled=yes name=qpidd state=started
+  when: ansible_hostname == "controller"
 
-    - name: config qpid
-      command: sed -i 's/auth=yes/auth=no/g' /etc/qpidd.conf
-      when: ansible_hostname == "controller"
+- name: install packages for namespaces support
+  yum: name=iproute*netns* state=present
 
-    - name: enable qpid
-      service: enabled=yes name=qpidd state=started
-      when: ansible_hostname == "controller"
+- name: install the openstack clients and python-pip
+ yum: pkg={{ item }} state=installed
+  with_items:
+   - python-pip
+   - python-novaclient
+   - python-neutronclient
+   - python-cinderclient
+   - python-keystoneclient
 
-    - name: install packages for namespaces support
-      yum: name=iproute*netns* state=present
+- name: reboot
+  command: reboot
 
-    - name: install the openstack clients and python-pip
-      yum: pkg={{ item }} state=installed
-      with_items:
-       - python-pip
-       - python-novaclient
-       - python-neutronclient
-       - python-cinderclient
-       - python-keystoneclient
+- name: wait for the server to go down (reboot)
+  sudo: false
+  local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 state=stopped
 
-    - name: reboot
-      command: reboot
+- name: wait for the server to come up
+  sudo: false
+  local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 delay=30
 
-    - name: wait for the server to go down (reboot)
-      sudo: false
-      local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 state=stopped
-
-    - name: wait for the server to come up
-      sudo: false
-      local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 delay=30
-
-    - name: pause 1 minute to allow boot to complete
-      pause: seconds=60
+- name: pause 1 minute to allow boot to complete
+  pause: seconds=60
