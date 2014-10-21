@@ -86,7 +86,7 @@
   yum: name=iproute*netns* state=present
 
 - name: install the openstack clients and python-pip
- yum: pkg={{ item }} state=installed
+  yum: pkg={{ item }} state=installed
   with_items:
    - python-pip
    - python-novaclient
