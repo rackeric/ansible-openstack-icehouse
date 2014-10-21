@@ -1,61 +1,67 @@
 ---
 # file: roles/nova/tasks/main.yml
 
-    - name: Install nova packages
-      command: yum install -y openstack-nova-api openstack-nova-cert openstack-nova-conductor openstack-nova-console openstack-nova-novncproxy openstack-nova-scheduler python-novaclient
+- name: Install nova packages
+  yum: pkg={{ item }} state=installed
+  with_items:
+   - openstack-nova-api
+   - openstack-nova-cert
+   - openstack-nova-conductor
+   - openstack-nova-console
+   - openstack-nova-novncproxy
+   - openstack-nova-scheduler
+   - python-novaclient
 
-    - name: set config options in nova.conf
-      command: openstack-config --set /etc/nova/nova.conf database connection mysql://nova:{{ NOVA_DBPASS }}@localhost/nova
+- name: set config options in nova.conf
+  command: {{ item }}
+  with_items:
+   - openstack-config --set /etc/nova/nova.conf database connection mysql://nova:{{ NOVA_DBPASS }}@{{ CONTROLLER }}/nova
+   - openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
+   - openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname {{ CONTROLLER }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT my_ip {{ MY_IP }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen {{ MY_IP }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address {{ MY_IP }}
 
-    - name: qpid config 1
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
+- name: create database
+  command: mysql -e "CREATE DATABASE nova"
+  ignore_errors: yes
 
-    - name: qpid config 2
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname {{ CONTROLLER }}
+- name: grant 1
+  command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
 
-    - name: vnc config 1
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT my_ip {{ MY_IP }}
+- name: grant 2
+  command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
 
-    - name: vnc config 2
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen {{ MY_IP }}
+- name: grant 3
+  command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'{{ CONTROLLER }}' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
 
-    - name: vnc config 3
-      command: openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address {{ MY_IP }}
+- name: flugh privs
+  command: mysql -e "FLUSH PRIVILEGES"
 
-    - name: create database
-      command: mysql -e "CREATE DATABASE nova"
-      ignore_errors: yes
+- name: check for nova_setup confirmation file
+  command: cat ~/.has_nova_setup
+  ignore_errors: yes
+  register: nova_setup_check
 
-    - name: grant 1
-      command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
+- name: nova db sync
+  command: su -s /bin/sh -c "nova-manage db sync" nova
+  when: nova_setup_check|failed
 
-    - name: grant 2
-      command: mysql -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY '{{ NOVA_DBPASS }}'"
+- name: nova config, service and endpoint set up
+  script: roles/nova/files/nova.sh
+  register: nova_setup
+  when: nova_setup_check|failed
 
-    - name: flugh privs
-      command: mysql -e "FLUSH PRIVILEGES"
+- name: enable nova services
+  service: enabled=yes name={{ item }} state=started
+  with_items:
+   - openstack-nova-api
+   - openstack-nova-cert
+   - openstack-nova-consoleauth
+   - openstack-nova-scheduler
+   - openstack-nova-conductor
+   - openstack-nova-novncproxy
 
-    - name: nova db sync
-      command: su -s /bin/sh -c "nova-manage db sync" nova
-
-    - name: nova config, service and endpoint set up
-      script: roles/nova/files/nova.sh
-
-    - name: enable openstack-nova-api service
-      service: enabled=yes name=openstack-nova-api state=started
-
-    - name: enable openstack-nova-cert service
-      service: enabled=yes name=openstack-nova-cert state=started
-
-    - name: enable openstack-nova-consoleauth service
-      service: enabled=yes name=openstack-nova-consoleauth state=started
-
-    - name: enable openstack-nova-scheduler service
-      service: enabled=yes name=openstack-nova-scheduler state=started
-
-    - name: enable openstack-nova-conductor service
-      service: enabled=yes name=openstack-nova-conductor state=started
-
-    - name: enable openstack-nova-novncproxy service
-      service: enabled=yes name=openstack-nova-novncproxy state=started
-
+- name: set has_nova_setup confirmation file
+  command: touch ~/.has_nova_setup
+  when: nova_setup|success

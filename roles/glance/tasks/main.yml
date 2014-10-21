@@ -27,7 +27,7 @@
   command: mysql -e "FLUSH PRIVILEGES"
 
 - name: check for glance_setup confirmation file
-  command: cat ~/.glance_setup
+  command: cat ~/.has_glance_setup
   ignore_errors: yes
   register: glance_setup_check
 
@@ -49,5 +49,5 @@
   when: glance_setup_check|failed
 
 - name: set glance_setup confirmation file
-  command: touch ~/.glance_setup
+  command: touch ~/.has_glance_setup
   when: glance_setup|success

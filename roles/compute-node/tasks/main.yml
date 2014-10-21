@@ -1,23 +1,23 @@
 ---
 # file: roles/compute-node/tasks/main.yml
 
-    - name: install database helper libraries on nodes
-      yum: pkg=MySQL-python state=present
+- name: install database helper libraries on nodes
+  yum: pkg=MySQL-python state=present
 
-    - name: install OpenStack packages
-      yum: pkg={{item}} state=installed
-      with_items:
-       - yum-plugin-priorities
-       - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
-       - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-       - openstack-utils
-       - openstack-selinux
+- name: install OpenStack packages
+  yum: pkg={{item}} state=installed
+  with_items:
+   - yum-plugin-priorities
+   - http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/rdo-release-icehouse-4.noarch.rpm
+   - http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+   - openstack-utils
+   - openstack-selinux
 
-    - name: upgrade all packages
-      yum: name=* state=latest
+- name: upgrade all packages
+  yum: name=* state=latest
 
-    - name: Install nova packages
-      command: yum install -y openstack-nova-compute
+- name: Install nova packages
+  command: yum install -y openstack-nova-compute
 
-    - name: compute node config
-      script: roles/compute-node/files/compute-node.sh
+- name: compute node config
+  script: roles/compute-node/files/compute-node.sh

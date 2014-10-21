@@ -45,7 +45,7 @@
 #  command: (crontab -l -u keystone 2>&1 | grep -q token_flush) || echo '@hourly /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1' >> /var/spool/cron/keystone
 
 - name: check for keystone_setup confirmation file
-  command: cat ~/.keystone_setup
+  command: cat ~/.has_keystone_setup
   ignore_errors: yes
   register: keystone_setup_check
 
@@ -62,5 +62,5 @@
   when: keystone_setup_check|failed
 
 - name: set keystone_setup confirmation file
-  command: touch ~/.keystone_setup
+  command: touch ~/.has_keystone_setup
   when: keystone_setup|success
