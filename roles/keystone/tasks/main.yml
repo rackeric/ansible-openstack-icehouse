@@ -13,8 +13,6 @@
 
 - name: Create MySQL database
   command: mysql -e "CREATE DATABASE keystone"
-  run_once: true
-  delegate_to: controller
   ignore_errors: yes
 
 - name: Grant 1
@@ -25,9 +23,6 @@
 
 - name: Flush Privileges
   command: mysql -e "FLUSH PRIVILEGES"
-
-- name: Keystone db sync
-  command: su -s /bin/sh -c "keystone-manage db_sync" keystone
 
 - name: Define auth token
   command: openstack-config --set /etc/keystone/keystone.conf DEFAULT admin_token {{ ADMIN_TOKEN }}
@@ -41,11 +36,8 @@
 - name: Step 6c
   command: chmod -R o-rwx /etc/keystone/ssl
 
-- name: enable Keystone service
-  service: enabled=yes name=openstack-keystone state=started
-
 - name: touch files
-  command: touch /var/spool/cron/keystone && touch /var/log/keystone/keystone-tokenflush.log
+  command: touch /var/spool/cron/keystone /var/log/keystone/keystone-tokenflush.log
 
 #- name: Step 8
 #  command: (crontab -l -u keystone 2>&1 | grep -q token_flush) || echo '@hourly /usr/bin/keystone-manage token_flush >/var/log/keystone/keystone-tokenflush.log 2>&1' >> /var/spool/cron/keystone
@@ -55,9 +47,15 @@
   ignore_errors: yes
   register: keystone_setup_check
 
+- name: Keystone db sync
+  command: su -s /bin/sh -c "keystone-manage db_sync" keystone
+  when: keystone_setup_check|failed
+
+- name: enable Keystone service
+  service: enabled=yes name=openstack-keystone state=started
+
 - name: define keystone user, tenants and roles
   script: roles/keystone/files/keystone.sh
-  ignore_errors: yes
   register: keystone_setup
   when: keystone_setup_check|failed
 
