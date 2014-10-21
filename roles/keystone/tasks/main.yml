@@ -38,6 +38,9 @@
 - name: Step 6c
   command: chmod -R o-rwx /etc/keystone/ssl
 
+- name: Change ownership of /var/log/keystone
+  command: chown -R keystone:keystone /var/log/keystone
+
 - name: touch files
   command: touch /var/spool/cron/keystone /var/log/keystone/keystone-tokenflush.log
 
