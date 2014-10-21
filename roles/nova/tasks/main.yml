@@ -13,7 +13,7 @@
    - python-novaclient
 
 - name: set config options in nova.conf
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
    - openstack-config --set /etc/nova/nova.conf database connection mysql://nova:{{ NOVA_DBPASS }}@{{ CONTROLLER }}/nova
    - openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
