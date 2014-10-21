@@ -28,8 +28,8 @@ openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_tena
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_user glance;
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_password $GLANCE_PASS;
 openstack-config --set /etc/glance/glance-api.conf paste_deploy flavor keystone;
-openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://$CONSTOLLER:5000;
-openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_host $CONSTROLLER;
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://$CONTOLLER:5000;
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_host $CONTROLLER;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_port 35357;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_protocol http;
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_tenant_name service;
