@@ -117,4 +117,4 @@
   openvswitch_port: bridge=br-ex port=eth0 state=present
 
 - name: create test networks
-  script: src=roles/neutron-network/files/neutron.sh
+  script: roles/neutron-network/files/neutron.sh
