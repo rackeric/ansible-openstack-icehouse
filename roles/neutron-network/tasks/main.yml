@@ -36,8 +36,9 @@
    - openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
    - openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT use_namespaces True
    - openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT dnsmasq_config_file /etc/neutron/dnsmasq-neutron.conf
-   - echo "dhcp-option-force=26,1454" >> /etc/neutron/dnsmasq-neutron.conf
-#   - killall dnsmasq
+
+- name: dnsmasq-neutron.conf file
+  lineinfile: dest=/etc/neutron/dnsmasq-neutron.conf state=present line="dhcp-option-force=26,1454"
 
 - name: Configure Metadata Agent
   command: "{{ item }}"
