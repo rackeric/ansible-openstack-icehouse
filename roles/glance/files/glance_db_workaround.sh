@@ -1,7 +1,8 @@
 #!/bin/sh
 # Fix for glance db sync fail for gmp
 
-if [ -d "gmp-6.0.0" ]; then
+if [ -d ~/gmp-6.0.0 ]; 
+then
   exit
 fi
 
