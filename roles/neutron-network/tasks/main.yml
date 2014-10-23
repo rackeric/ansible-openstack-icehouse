@@ -92,6 +92,14 @@
    - neutron-dhcp-agent
    - neutron-metadata-agent
 
+- name: Restart neutron services
+  service: name={{ item }} enabled=yes state=restarted
+  with_items:
+   - neutron-openvswitch-agent
+   - neutron-l3-agent
+   - neutron-dhcp-agent
+   - neutron-metadata-agent
+
 - name: Create ifcfg-br-ex file
   template: src=roles/neutron-network/files/ifcfg-br-ex.j2 dest=/etc/sysconfig/network-scripts/ifcfg-br-ex owner=root group=root mode=0644
 
