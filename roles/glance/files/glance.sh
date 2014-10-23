@@ -6,17 +6,14 @@
 
 GLANCE_PASS="glance"
 CONTROLLER="controller"
+EMAIL="me@domain.com"
 
 export OS_SERVICE_TOKEN=a1s2d3f4g5h6j7k8
 export OS_SERVICE_ENDPOINT=http://$CONTROLLER:35357/v2.0
 
-# glance db sync
-# moving to playbook task
-#su -s /bin/sh -c "glance-manage db_sync" glance
-
 # Step 5
 
-keystone user-create --name=glance --pass=$GLANCE_PASS --email=eric@empulsegroup.com;
+keystone user-create --name=glance --pass=$GLANCE_PASS --email=$EMAIL;
 keystone user-role-add --user=glance --tenant=service --role=admin;
 
 # Step 6
@@ -38,8 +35,11 @@ openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin
 openstack-config --set /etc/glance/glance-registry.conf paste_deploy flavor keystone;
 
 # Step 7
-keystone service-create --name=glance --type=image --description="OpenStack Image Service";keystone endpoint-create --service-id=$(keystone service-list | awk '/ image / {print $2}') --publicurl=http://$CONTROLLER:9292 --internalurl=http://$CONTROLLER:9292 --adminurl=http://$CONTROLLER:9292;
+keystone service-create --name=glance --type=image --description="OpenStack Image Service";
+keystone endpoint-create --service-id=$(keystone service-list | awk '/ image / {print $2}') --publicurl=http://$CONTROLLER:9292 --internalurl=http://$CONTROLLER:9292 --adminurl=http://$CONTROLLER:9292;
 
 # Step 8
-service openstack-glance-api start;service openstack-glance-registry start;chkconfig openstack-glance-api on;chkconfig openstack-glance-registry on;
-
+service openstack-glance-api start;
+service openstack-glance-registry start;
+chkconfig openstack-glance-api on;
+chkconfig openstack-glance-registry on;
