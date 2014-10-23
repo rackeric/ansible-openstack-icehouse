@@ -98,11 +98,11 @@
 - name: Create /etc/sysconfig/network-scripts/ifcfg-eth0
   template: src=roles/neutron-network/files/ifcfg-eth0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-eth0 owner=root group=root mode=0644
 
-- name: Update /etc/neutron/plugin.ini #1
-  command: echo "network_vlan_ranges = physnet1" >> /etc/neutron/plugin.ini
-
-- name: Update /etc/neutron/plugin.ini #2
-  command: echo "bridge_mappings = physnet1:br-ex" >> /etc/neutron/plugin.ini
+- name: Update /etc/neutron/plugin.ini
+  lineinfile: dest=/etc/neutron/plugin.ini state=present line={{ item }}
+  with_items:
+   - network_vlan_ranges=physnet1
+   - bridge_mappings=physnet1:br-ex
 
 - name: restart networking
   command: service network restart
