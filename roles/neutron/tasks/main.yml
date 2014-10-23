@@ -44,7 +44,7 @@
    - python-neutronclient
 
 - name: Configure Networking Server Components
-  command: "{{ item }}"
+  shell: "{{ item }}"
   with_items:
    - openstack-config --set /etc/neutron/neutron.conf database connection mysql://neutron:{{ NEUTRON_DBPASS }}@{{ CONTROLLER }}/neutron
    - openstack-config --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
