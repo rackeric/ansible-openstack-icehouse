@@ -116,16 +116,16 @@
 - name: Creates port eth0 on OVS bridge br-ex
   openvswitch_port: bridge=br-ex port=eth0 state=present
 
-- name: check for .has_neutron_setup confirmation file
-  command: cat ~/.has_neutron_setup
+- name: check for .has_neutron_networks_setup confirmation file
+  command: cat ~/.has_neutron_networks_setup
   ignore_errors: yes
-  register: neutron_setup_check
+  register: neutron_networks_setup_check
 
 - name: create test networks
   script: roles/neutron-network/files/neutron.sh
-  register: neutron_setup
-  when: neutron_setup_check|failed
+  register: neutron_networks_setup
+  when: neutron_networks_setup_check|failed
 
-- name: set neutron_setup confirmation file
-  command: touch ~/.has_neutron_setup
-  when: neutron_setup|success
+- name: set .has_neutron_networks_setup confirmation file
+  command: touch ~/.has_neutron_networks_setup
+  when: neutron_networks_setup|success
