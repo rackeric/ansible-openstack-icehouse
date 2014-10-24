@@ -21,7 +21,7 @@ Helpful Information
 -------------------
 The common role will update all packages and issue a reboot.  A task is present to wait 60 seconds from when seeing the server online to allowing for the server to completely boot up. Added a check to only reboot if yum update task changed anything.
 
-The roles will search for a hidden file to confirm if the setup scripts have been ran and will not run again if found.  These are the tasks which create keystone users, services and endpoints for the other OpenStack components.
+The roles will search for a hidden file to confirm if the setup scripts have been ran and will not run again if found.  These are the tasks which create keystone users, services and endpoints for the other OpenStack components, imports the cirros test image in glance and creates a public and private network in neutron.
 
 - ~/.has_keystone_setup
 - ~/.has_glance_setup
