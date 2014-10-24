@@ -27,6 +27,7 @@ The roles will search for a hidden file to confirm if the setup scripts have bee
 - ~/.has_glance_setup
 - ~/.has_nova_setup
 - ~/.has_neutron_setup
+- ~/.has_neutron_networks_setup
 
 
 Following the RDO article on using Neutron with existing external network I added tasks placing the public IP address on the br-ex interface and updates neutron to allow floating IP addresses to be created on your existing network. See neutron-network role for network creation script to change for your local network.
