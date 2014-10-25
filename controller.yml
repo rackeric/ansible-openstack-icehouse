@@ -10,3 +10,4 @@
     - neutron-network
     - horizon
     - cinder
+    - cinder-node
