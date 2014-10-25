@@ -5,3 +5,4 @@
     - common
     - compute-node
     - neutron-compute-node
+    - cinder-node

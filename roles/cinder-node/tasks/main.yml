@@ -1,0 +1,41 @@
+---
+# tasks file for cinder-node
+
+- name: Install Cinder node packages
+  yum: pkg={{ item }} state=present
+  with_items:
+   - openstack-cinder
+   - scsi-target-utils
+
+- name: Update cinder.conf
+  shell: "{{ item }}"
+  with_items:
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_host {{ controller }}
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_protocol http
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_port 35357
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_user cinder
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_tenant_name service
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_password {{ CINDER_PASS }}
+
+- name: Configure Block Storage to use the Qpid message broker
+  shell: "{{ item }}"
+  with_items:
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT rpc_backend qpid
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT qpid_hostname {{ CONTROLLER }}
+
+- name: Configure Block Storage to use your MySQL database
+  shell: openstack-config --set /etc/cinder/cinder.conf database connection mysql://cinder:{{ CINDER_DBPASS }}@{{ CONTROLLER }}/cinder
+
+- name: Configure Block Storage to use the Image Service
+  shell: openstack-config --set /etc/cinder/cinder.conf DEFAULT glance_host {{ CONTROLLER }}
+
+- name: Configure the iSCSI target service to discover Block Storage volumes
+  lineinfile: dest=/etc/tgt/targets.conf state=present line="include /etc/cinder/volumes/*" create=yes
+
+- name: enable Block Storage services
+  service: enabled=yes name={{ item }} state=started
+  with_items:
+   - openstack-cinder-volume
+   - tgtd
