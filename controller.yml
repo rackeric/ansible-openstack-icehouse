@@ -9,3 +9,4 @@
     - neutron
     - neutron-network
     - horizon
+    - cinder

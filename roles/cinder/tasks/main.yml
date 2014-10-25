@@ -1,0 +1,78 @@
+---
+# tasks file for cinder
+
+- name: install cinder package
+yum: pkg=openstack-cinder state=present
+
+- name: set db connection
+  shell: openstack-config --set /etc/cinder/cinder.conf database connection mysql://cinder:{{ CINDER_DBPASS }}@controller/cinder
+
+- name: create db
+  shell: CREATE DATABASE cinder
+  ignore_errors: yes
+
+- name: set grants
+  shell: {{ item }}
+  with_items:
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost'  IDENTIFIED BY '{{ CINDER_DBPASS}}'"
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%'  IDENTIFIED BY '{{ CINDER_DBPASS }}'"
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'{{ CONTROLLER }}'   IDENTIFIED BY '{{ CINDER_DBPASS }}'"
+   - mysql -e "FLUSH PRIVILEGES"
+
+- name: check for cinder_setup confirmation file
+  command: cat ~/.has_cinder_setup
+  ignore_errors: yes
+  register: cinder_setup_check
+
+- name: cinder db sync
+  shell: su -s /bin/sh -c "cinder-manage db sync" cinder
+  when: cinder_setup_check|failed
+
+- name: create keystone user and role
+  shell: {{ item }}
+  with_items:
+   - keystone user-create --name=cinder --pass={{ CINDER_PASS }} --email={{ EMAIL }}
+   - keystone user-role-add --user=cinder --tenant=service --role=admin
+  environment: ENVIRONMENT
+
+- name: Edit the /etc/cinder/cinder.conf configuration file
+  shell: {{ item }}
+  with_items:
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT  auth_strategy keystone
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_uri http://{{ CONTROLLER }}:5000
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_host {{ CONTROLLER }}
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_protocol http
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_port 35357
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_user cinder
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_tenant_name service
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_password {{ CINDER_PASS }}
+
+- name: Configure Block Storage to use the Qpid message broker
+  shell: {{ item }}
+  with_items:
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT rpc_backend qpid
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT qpid_hostname {{ CONTROLLER }}
+
+- name: Register the Block Storage service with the Identity service
+  shell: {{ item }}
+  with_items:
+   - keystone service-create --name=cinder --type=volume --description="OpenStack Block Storage"
+   - keystone endpoint-create \
+  --service-id=$(keystone service-list | awk '/ volume / {print $2}') \
+  --publicurl=http://controller:8776/v1/%\(tenant_id\)s \
+  --internalurl=http://controller:8776/v1/%\(tenant_id\)s \
+  --adminurl=http://controller:8776/v1/%\(tenant_id\)s
+  environment: ENVIRONMENT
+
+- name: Register a service and endpoint for version 2 of the Block Storage service API
+  shell: {{ item }}
+  with_items:
+   - keystone service-create --name=cinderv2 --type=volumev2 --description="OpenStack Block Storage v2"
+   - keystone endpoint-create --service-id=$(keystone service-list | awk '/ volumev2 / {print $2}') --publicurl=http://{{ CONTROLLER }}:8776/v2/%\(tenant_id\)s --internalurl=http://{{ CONTROLLER }}:8776/v2/%\(tenant_id\)s --adminurl=http://{{ CONTROLLER }}:8776/v2/%\(tenant_id\)s
+  environment: ENVIRONMENT
+
+- name: Start and configure the Block Storage services to start when the system boots
+  service: enabled=yes name={{ item }} state=started
+  with_items:
+   - openstack-cinder-api
+   - openstack-cinder-scheduler
