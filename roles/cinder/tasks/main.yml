@@ -14,9 +14,9 @@
 - name: set grants
   shell: "{{ item }}"
   with_items:
-   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost'  IDENTIFIED BY '{{ CINDER_DBPASS}}'"
-   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%'  IDENTIFIED BY '{{ CINDER_DBPASS }}'"
-   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'{{ CONTROLLER }}'   IDENTIFIED BY '{{ CINDER_DBPASS }}'"
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost' IDENTIFIED BY '{{ CINDER_DBPASS}}'"
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%' IDENTIFIED BY '{{ CINDER_DBPASS }}'"
+   - mysql -e "GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'{{ CONTROLLER }}' IDENTIFIED BY '{{ CINDER_DBPASS }}'"
    - mysql -e "FLUSH PRIVILEGES"
 
 - name: check for cinder_setup confirmation file
@@ -39,14 +39,14 @@
 - name: Edit the /etc/cinder/cinder.conf configuration file
   shell: "{{ item }}"
   with_items:
-   - openstack-config --set /etc/cinder/cinder.conf DEFAULT  auth_strategy keystone
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_uri http://{{ CONTROLLER }}:5000
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_host {{ CONTROLLER }}
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_protocol http
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  auth_port 35357
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_user cinder
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_tenant_name service
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken  admin_password {{ CINDER_PASS }}
+   - openstack-config --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_host {{ CONTROLLER }}
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_protocol http
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_port 35357
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_user cinder
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_tenant_name service
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_password {{ CINDER_PASS }}
 
 - name: Configure Block Storage to use the Qpid message broker
   shell: "{{ item }}"
