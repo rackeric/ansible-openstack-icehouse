@@ -1,22 +1,22 @@
 ---
 # file: roles/horizon/tasks/main.yml
 
-    - name: Install packages via yum
-      yum: pkg={{item}} state=installed
-      with_items:
-       - memcached
-       - python-memcached
-       - mod_wsgi
-       - openstack-dashboard
+- name: Install packages via yum
+  yum: pkg={{item}} state=installed
+  with_items:
+   - memcached
+   - python-memcached
+   - mod_wsgi
+   - openstack-dashboard
 
-    - name: push local_settings file
-      copy: src=roles/horizon/files/local_settings dest=/etc/openstack-dashboard/local_settings
+- name: push local_settings file
+  copy: src=roles/horizon/files/local_settings dest=/etc/openstack-dashboard/local_settings
 
-#    - name: SELINUX stuffs
-#      command: setsebool -P httpd_can_network_connect on
+- name: SELINUX stuffs
+  command: setsebool -P httpd_can_network_connect on
 
-    - name: enable Apache
-      service: enabled=yes name=httpd state=started
+- name: enable Apache
+  service: enabled=yes name=httpd state=started
 
-    - name: enable memcached
-      service: enabled=yes name=memcached state=started
+ - name: enable memcached
+   service: enabled=yes name=memcached state=started
