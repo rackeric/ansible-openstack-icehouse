@@ -131,9 +131,18 @@
   register: neutron_networks_setup_check
 
 - name: create test networks
-  script: roles/neutron-network/files/neutron.sh
+  shell: "{{ item }}"
+  with_items:
+   - neutron net-create ext-net --shared --router:external=True
+   - neutron subnet-create ext-net --name ext-subnet --allocation-pool start={{ EXT_NET_DHCP_START }},end={{ EXT_NET_DHCP_END }} --disable-dhcp --gateway {{ EXT_NET_GATEWAY }} {{ EXT_NET_NETWORK }}
+   - neutron net-create demo-net
+   - neutron subnet-create demo-net --name demo-subnet --gateway {{ DEMO_NET_GATEWAY }} {{ DEMO_NET_NETWORK }}
+   - neutron router-create demo-router
+   - neutron router-interface-add demo-router demo-subnet
+   - neutron router-gateway-set demo-router ext-net
   register: neutron_networks_setup
   when: neutron_networks_setup_check|failed
+  environment: ENVIRONMENT
 
 - name: set .has_neutron_networks_setup confirmation file
   command: touch ~/.has_neutron_networks_setup
