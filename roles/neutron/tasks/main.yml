@@ -23,18 +23,15 @@
   register: neutron_setup_check
 
 - name: Add Keystone service and endpoint
-  script: roles/neutron/files/neutron.sh
+  shell: "{{ item }}"
+  with_items:
+   - keystone user-create --name neutron --pass {{ NEUTRON_PASS }} --email {{ EMAIL }}
+   - keystone user-role-add --user neutron --tenant service --role admin
+   - keystone service-create --name neutron --type network --description "OpenStack Networking"
+   - keystone endpoint-create --service-id $(keystone service-list | awk '/ network / {print $2}') --publicurl http://{{ CONTROLLER }}:9696 --adminurl http://{{ CONTROLLER }}:9696 --internalurl http://{{ CONTROLLER }}:9696
   register: neutron_setup
   when: neutron_setup_check|failed
-
-#- name: Add Keystone service and endpoint
-#  command: "{{ item }}"
-#  with_items:
-#   - keystone user-create --name neutron --pass neutron --email {{ EMAIL }}
-#   - keystone user-role-add --user neutron --tenant service --role admin
-#   - keystone service-create --name neutron --type network --description "OpenStack Networking"
-#   - ID=`keystone service-list | awk '/ network / {print $2}'` keystone endpoint-create --service-id $ID --publicurl http://{{ CONTROLLER }}:9696 --adminurl http://{{ CONTROLLER }}:9696 --internalurl http://{{ CONTROLLER }}:9696
-#  environment: ENVIRONMENT
+  environment: ENVIRONMENT
 
 - name: Install Networking Components
   yum: pkg={{ item }} state=installed
