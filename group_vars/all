@@ -1,27 +1,37 @@
 ---
 # file: group_vars/all
 
+# hostname of the controller, mapped in /etc/hosts
 CONTROLLER: controller
 
-EMAIL: me@domain.com
+# mysql admin db password
 MYSQL_ADMIN_PASS:
 
+# email addressed used for keystone services
+EMAIL: me@domain.com
+
+# keystone users passwords
 ADMIN_PASS: admin
 DEMO_PASS: demo
 
+# keystone vars
 KEYSTONE_DBPASS: keystone
 ADMIN_TOKEN: a1s2d3f4g5h6j7k8
 
+# glance vars
 GLANCE_DBPASS: glance
 
+# nova vars
 NOVA_DBPASS: nova
 NOVA_ADMIN_PASS: nova
 MY_IP: "{{ ansible_eth1.ipv4.address }}"
 
+# neutron vars
 NEUTRON_DBPASS: neutron
 NEUTRON_ADMIN_PASS: neutron
 LOCAL_IP: "{{ ansible_eth1.ipv4.address }}"
 
+# neutron test networks
 EXT_NET_NETWORK: 192.168.1.0/24
 EXT_NET_GATEWAY: 192.168.1.254
 EXT_NET_DHCP_START: 192.168.1.150
@@ -29,16 +39,18 @@ EXT_NET_DHCP_END: 192.168.1.200
 DEMO_NET_NETWORK: 10.0.0.0/24
 DEMO_NET_GATEWAY: 10.0.0.1
 
+# cinder vars
 CINDER_DBPASS: cinder
 CINDER_PASS: cinder
 
-ENVIRONMENT:
-  OS_USERNAME: admin
-  OS_PASSWORD: admin
-  OS_TENANT_NAME: admin
-  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0
-
+# linux environment variables used for initial keystone setup
 SERVICE:
   OS_SERVICE_TOKEN: "{{ ADMIN_TOKEN }}"
   OS_SERVICE_ENDPOINT: http://{{ CONTROLLER }}:35357/v2.0
 
+# linux environment variables used for normal keystone interaction
+ENVIRONMENT:
+  OS_USERNAME: admin
+  OS_PASSWORD: "{{ ADMIN_PASS }}"
+  OS_TENANT_NAME: admin
+  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0
