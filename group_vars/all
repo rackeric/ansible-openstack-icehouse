@@ -16,11 +16,11 @@ GLANCE_DBPASS: glance
 
 NOVA_DBPASS: nova
 NOVA_ADMIN_PASS: nova
-MY_IP: "{{ ansible_default_ipv4.address }}"
+MY_IP: "{{ ansible_eth1.ipv4.address }}"
 
 NEUTRON_DBPASS: neutron
 NEUTRON_ADMIN_PASS: neutron
-LOCAL_IP: "{{ ansible_default_ipv4.address }}"
+LOCAL_IP: "{{ ansible_eth1.ipv4.address }}"
 
 CINDER_DBPASS: cinder
 CINDER_PASS: cinder
