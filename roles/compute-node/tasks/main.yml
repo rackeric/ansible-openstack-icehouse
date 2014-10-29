@@ -20,4 +20,32 @@
   command: yum install -y openstack-nova-compute
 
 - name: compute node config
-  script: roles/compute-node/files/compute-node.sh
+  shell: "{{ item }}"
+  with_items:
+   - openstack-config --set /etc/nova/nova.conf database connection mysql://$ADMIN_USER:$ADMIN_PASS@$CONTROLLER/nova;
+   - openstack-config --set /etc/nova/nova.conf DEFAULT auth_strategy keystone
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_host {{ CONTROLLER }}
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_protocol http
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_port 35357
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_user nova
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_tenant_name service
+   - openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_password {{ NOVA_PASS }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT rpc_backend qpid
+   - openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname {{ CONTROLLER }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT my_ip {{ MY_IP }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT vnc_enabled True
+   - openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen 0.0.0.0
+   - openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address {{ MY_IP }}
+   - openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_base_url http://{{ CONTROLLER }}:6080/vnc_auto.html
+   - openstack-config --set /etc/nova/nova.conf DEFAULT glance_host {{ CONTROLLER }}
+
+- name: check for support hardware acceleration for virtual machines
+  shell: if [ $(egrep -c '(vmx|svm)' /proc/cpuinfo) -eq 0 ]; then openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu; fi
+
+- name: enabled services
+  service: enabled=yes name={{ item }} state=started
+  with_items:
+   - libvirtd
+   - messagebus
+   - openstack-nova-compute
