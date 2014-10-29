@@ -47,8 +47,14 @@
    - MySQL-python
   when: ansible_hostname == "controller"
 
-- name: push my.cnf file
-  copy: src=roles/common/files/my.cnf dest=/etc/my.cnf owner=root group=root
+- name: update /etc/my.cnf
+  shell: "{{ item }}"
+  with_items:
+   - crudini --set /etc/my.cnf mysqld default-storage-engine innodb
+   - crudini --set /etc/my.cnf mysqld innodb_file_per_table
+   - crudini --set /etc/my.cnf mysqld collation-server utf8_general_ci
+   - crudini --set /etc/my.cnf mysqld init-connect 'SET NAMES utf8'
+   - crudini --set /etc/my.cnf mysqld character-set-server utf8
   when: ansible_hostname == "controller"
 
 - name: enable database
