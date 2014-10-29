@@ -51,11 +51,13 @@
   shell: "{{ item }}"
   with_items:
    - crudini --set /etc/my.cnf mysqld default-storage-engine innodb
-   - crudini --set /etc/my.cnf mysqld innodb_file_per_table
+   - crudini --set /etc/my.cnf mysqld innodb_file_per_table true
    - crudini --set /etc/my.cnf mysqld collation-server utf8_general_ci
    - crudini --set /etc/my.cnf mysqld init-connect 'SET NAMES utf8'
    - crudini --set /etc/my.cnf mysqld character-set-server utf8
   when: ansible_hostname == "controller"
+  notify:
+     - restart mysqld
 
 - name: enable database
   service: enabled=yes name=mysqld state=started
