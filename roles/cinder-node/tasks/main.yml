@@ -12,7 +12,7 @@
   with_items:
    - openstack-config --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
    - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://{{ CONTROLLER }}:5000
-   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_host {{ controller }}
+   - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_host {{ CONTROLLER }}
    - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_protocol http
    - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_port 35357
    - openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_user cinder

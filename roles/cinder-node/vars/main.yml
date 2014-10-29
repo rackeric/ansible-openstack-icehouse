@@ -1,5 +1,2 @@
 ---
 # vars file for cinder-node
-CINDER_DBPASS: cinder
-CINDER_PASS: cinder
-CONTROLLER: controller

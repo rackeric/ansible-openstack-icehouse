@@ -9,5 +9,5 @@
     - neutron
     - neutron-network
     - horizon
-    - cinder
-    - cinder-node
+#    - cinder
+#    - cinder-node

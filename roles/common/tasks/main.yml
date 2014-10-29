@@ -15,9 +15,14 @@
 - name: enable iptables
   service: enabled=yes name=iptables state=started
 
+- name: install libselinux-python
+  yum: pkg=libselinux-python state=present
+
 - name: "Build hosts file"
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
-  when: hostvars[item].ansible_default_ipv4.address is defined
+#  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_eth1.ipv4.address }} {{item}}" state=present
+  when: hostvars[item].ansible_eth1.ipv4.address is defined
+#  when: hostvars[item].ansible_default_ipv4.address is defined
   with_items: groups['all'] 
 
 - name: install misc items

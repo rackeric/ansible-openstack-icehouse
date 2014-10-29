@@ -1,0 +1,37 @@
+---
+# file: group_vars/all
+
+CONTROLLER: controller
+
+EMAIL: me@domain.com
+MYSQL_ADMIN_PASS:
+
+ADMIN_PASS: admin
+DEMO_PASS: demo
+
+KEYSTONE_DBPASS: keystone
+ADMIN_TOKEN: a1s2d3f4g5h6j7k8
+
+GLANCE_DBPASS: glance
+
+NOVA_DBPASS: nova
+NOVA_ADMIN_PASS: nova
+MY_IP: "{{ ansible_default_ipv4.address }}"
+
+NEUTRON_DBPASS: neutron
+NEUTRON_ADMIN_PASS: neutron
+LOCAL_IP: "{{ ansible_default_ipv4.address }}"
+
+CINDER_DBPASS: cinder
+CINDER_PASS: cinder
+
+ENVIRONMENT:
+  OS_USERNAME: admin
+  OS_PASSWORD: admin
+  OS_TENANT_NAME: admin
+  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0
+
+SERVICE:
+  OS_SERVICE_TOKEN: "{{ ADMIN_TOKEN }}"
+  OS_SERVICE_ENDPOINT: http://{{ CONTROLLER }}:35357/v2.0
+

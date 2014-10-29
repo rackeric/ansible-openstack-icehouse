@@ -1,12 +1,2 @@
 ---
 # vars file for neutron
-NEUTRON_DBPASS: neutron
-EMAIL: me@domain.com
-NEUTRON_ADMIN_PASS: neutron
-NOVA_ADMIN_PASS: nova
-CONTROLLER: controller
-ENVIRONMENT:
-  OS_USERNAME: admin
-  OS_PASSWORD: admin
-  OS_TENANT_NAME: admin
-  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0

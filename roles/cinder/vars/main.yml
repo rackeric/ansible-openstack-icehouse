@@ -1,11 +1,2 @@
 ---
 # vars file for cinder
-CINDER_DBPASS: cinder
-EMAIL: me@domain.com
-CINDER_PASS: cinder
-CONTROLLER: controller
-ENVIRONMENT:
-  OS_USERNAME: admin
-  OS_PASSWORD: admin
-  OS_TENANT_NAME: admin
-  OS_AUTH_URL: http://{{ CONTROLLER }}:35357/v2.0

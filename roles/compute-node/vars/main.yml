@@ -1,4 +1,2 @@
 ---
 # vars file for compute-node
-NOVA_DBPASS: nova
-MY_IP: "{{ ansible_default_ipv4.address }}"
