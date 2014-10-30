@@ -1,4 +1,11 @@
 ---
 # file: site.yml
+
+# Moving common role to it's own section to allow for
+#  complete creation of /etc/hosts file for all hosts
+- hosts: all
+  roles:
+   - common
+
 - include: controller.yml
 - include: compute-node.yml

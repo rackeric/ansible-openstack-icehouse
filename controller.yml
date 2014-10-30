@@ -2,7 +2,6 @@
 # file: controller.yml
 - hosts: controllers
   roles:
-    - common
     - keystone
     - glance
     - nova

@@ -20,10 +20,12 @@ ADMIN_TOKEN: a1s2d3f4g5h6j7k8
 
 # glance vars
 GLANCE_DBPASS: glance
+GLANCE_PASS: glance
 
 # nova vars
 NOVA_DBPASS: nova
 NOVA_ADMIN_PASS: nova
+NOVA_PASS: nova
 MY_IP: "{{ ansible_eth1.ipv4.address }}"
 
 # neutron vars
