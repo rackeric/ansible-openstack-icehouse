@@ -31,6 +31,7 @@ MY_IP: "{{ ansible_eth1.ipv4.address }}"
 # neutron vars
 NEUTRON_DBPASS: neutron
 NEUTRON_ADMIN_PASS: neutron
+NEUTRON_PASS: neutron
 LOCAL_IP: "{{ ansible_eth1.ipv4.address }}"
 
 # neutron test networks
