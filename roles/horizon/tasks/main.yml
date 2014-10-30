@@ -14,6 +14,7 @@
 
 - name: SELINUX stuffs
   seboolean: name=httpd_can_network_connect state=yes persistent=yes
+  ignore_errors: yes
 
 - name: enable Apache
   service: enabled=yes name=httpd state=started
