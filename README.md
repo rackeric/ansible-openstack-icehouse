@@ -33,3 +33,8 @@ The roles will search for a hidden file to confirm if the setup scripts have bee
 Following the RDO article on using Neutron with existing external network I added tasks placing the public IP address on the br-ex interface and updates neutron to allow floating IP addresses to be created on your existing network. See neutron-network role for network creation script to change for your local network.
 
 https://openstack.redhat.com/Neutron_with_existing_external_network
+
+License
+-------
+
+Apache2
