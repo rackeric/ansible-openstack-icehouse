@@ -37,4 +37,4 @@ https://openstack.redhat.com/Neutron_with_existing_external_network
 License
 -------
 
-Apache2
+Apache License, Version 2.0
